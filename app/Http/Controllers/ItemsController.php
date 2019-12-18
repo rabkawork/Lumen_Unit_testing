@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 class ItemsController extends Controller
 {
+    
     /**
      * Create a new controller instance.
      *
@@ -11,7 +12,7 @@ class ItemsController extends Controller
      */
     public function __construct()
     {
-        //
+        $this->middleware('auth');
     }
 
     //
