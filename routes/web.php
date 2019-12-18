@@ -15,10 +15,9 @@
 //     return $router->app->version();
 // });
 
-
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->post('login', 'AuthController@login');
+$router->group(['prefix' => 'checklists'], function () use ($router) {
    // Matches "/api/login
-   $router->post('login', 'AuthController@login');
 });
 
    
