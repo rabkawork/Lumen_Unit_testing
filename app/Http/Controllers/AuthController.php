@@ -38,7 +38,12 @@ class AuthController extends Controller {
             if ($validator->fails()) 
             {
                 //return required validation
-                return response()->json(['data' => $validator->errors(), 'message' => 'Login Failed!'], 411);
+                return response()->json([
+                        'data'    => $validator->errors(), 
+                        'message' => 'Login Failed!',
+                        'status'  => 411
+                       ],
+                       411);
             }
             else
             {
@@ -46,22 +51,33 @@ class AuthController extends Controller {
         		$credentials = $request->only(['email', 'password']);
                 $token = Auth::attempt($credentials);
 
-        		if (!$token ) 
+        		if (!$token) 
                 {
-                    return response()->json(['data' => null, 'message' => 'Email Or Password Not Found'], 404);
+                    return response()->json([
+                            'data'    => null, 
+                            'message' => 'Email Or Password Not Found',
+                            'status'  => 404, 
+                        ], 404);
         		}
                 else
                 {
                     $user = Auth::user();
-                    $user['auth'] = $this->respondWithToken($token);
-                    return response()->json(['data' => $user, 'message' => 'User Registration Success'],200);
+                    $user['authorization'] = $this->authResponse($token);
+                    return response()->json([
+                        'data'    => $user, 
+                        'message' => 'Login Success',
+                        'status'  => 200, 
+                    ],200);
                 }
             }
 
-    		// return $this->respondWithToken($token);
         } catch (\Exception $e) {
             //return error message
-            return response()->json(['data' => $e, 'message' => 'Login Failed!'], 409);
+            return response()->json([
+                    'data'    => $e, 
+                    'message' => 'Login Failed!',
+                    'status'  => 500, 
+                ], 500);
         }
 	}
 

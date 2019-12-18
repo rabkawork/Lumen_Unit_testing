@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class Controller extends BaseController
 {
     //
-    protected function respondWithToken($token)
+    protected function authResponse($token)
     {
         return 
         [
