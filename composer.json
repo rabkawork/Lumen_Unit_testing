@@ -10,9 +10,10 @@
         "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {
+        "codeception/codeception": "^3.1",
         "fzaninotto/faker": "^1.4",
-        "phpunit/phpunit": "^8.0",
-        "mockery/mockery": "^1.0"
+        "mockery/mockery": "^1.0",
+        "phpunit/phpunit": "^8.0"
     },
     "autoload": {
         "classmap": [
