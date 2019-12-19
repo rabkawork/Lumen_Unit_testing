@@ -7,7 +7,7 @@ use App\Checklist;
 use App\Template;
 use Illuminate\Http\Request;
 use DB;
-
+use URL;
 
 class TemplatesController extends Controller
 {
@@ -17,11 +17,58 @@ class TemplatesController extends Controller
         $this->middleware('auth');
     }
 
-
-
     public function index(Request $request)
-    {
-        $params = $request->all();
+    {   
+
+
+        $templatesCount = DB::table('templates')
+                     ->select(DB::raw('count(*) as total'))->first();
+
+        $page_limit  = $request->page_limit  ? (int) $request->page_limit  : 0;
+        $page_offset = $request->page_offset ? (int) $request->page_offset : 0;
+
+        $count = ceil((int) $templatesCount->total / (int) $page_limit);
+        return $templatesCount->total;
+
+        $first = $count > 0 ? URL::to('/').'api/checklists/templates?page[limit]='.(int) $page_limit.'page[offset]=0' : "null";
+        $last  = $count > 0 ? URL::to('/').'api/checklists/templates?page[limit]='.(int) $page_limit.'page[offset]='.(int) $count : "null";
+
+        $next  = $count > 0 && $page_offset < $count ? 
+                    URL::to('/').'api/checklists/templates?page[limit]='.(int) $page_limit.'page[offset]='.((int) $page_limit + (int) $page_offset) : "null";
+        $prev  = $count > 0 && $page_offset > 0 ? 
+                    URL::to('/').'api/checklists/templates?page[limit]='.(int) $page_limit.'page[offset]='.((int) $page_limit - (int) $page_offset)  : "null";
+
+        $templates = DB::table('templates')
+                ->offset((int) $request->page_offset)
+                ->limit((int) $request->page_limit)
+                ->get();
+
+        $params            = $request->all();
+        $response          = [];
+        $response['meta']  = ['total' => (int)$templatesCount->total,'count' => $count];
+        $response['links'] = ['first' => $first,'last' => $last,'next' => $next,'prev' => $prev];
+    
+        $data = [];
+        foreach ($templates as $key => $value) {
+            $templates = DB::table('templates')->select('name')
+                ->where('id', '=', $value->id)
+                ->first();
+
+            $checklists = DB::table('checklists')->select('description','due_unit','due_interval')
+                ->where('template_id', '=', $value->id)
+                ->first();
+
+            $items = DB::table('items')->select('description','urgency','due_unit','due_interval')
+                ->where('template_id', '=', $value->id)
+                ->get();
+
+            $data[] = ['name' => $templates->name,'checklists' => $checklists,'items' => $items];
+        
+        }
+
+        $response['data']  = $data;
+
+        return response()->json($response,200);
     }
 
     public function create(Request $request)

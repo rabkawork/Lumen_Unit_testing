@@ -13,5 +13,20 @@ class Template extends Model {
 
 	protected $guarded = [];
 
+	/**
+     * Get the Checklist record associated with the user.
+     */
+    public function Checklist()
+    {
+        return $this->hasOne('App\Checklist');
+    }
 
+
+    /**
+     * Get the Checklist record associated with the user.
+     */
+    public function Item()
+    {
+        return $this->hasMany('App\Item');
+    }
 }
