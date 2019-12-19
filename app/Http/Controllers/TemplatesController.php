@@ -6,6 +6,7 @@ use App\Item;
 use App\Checklist;
 use App\Template;
 use Illuminate\Http\Request;
+use DB;
 
 
 class TemplatesController extends Controller
@@ -93,7 +94,7 @@ class TemplatesController extends Controller
         try {
             $reqBody['templateId'] = $id;
             $validator = \Validator::make($reqBody, [
-                'templateId'     => 'required|numeric',
+                'templateId'     => 'required|exists:templates,id',
             ]);
 
             if ($validator->fails()) 
@@ -108,7 +109,31 @@ class TemplatesController extends Controller
             else
             {
 
-                return response()->json('',204);
+                $attributes = [];
+                $templates = DB::table('templates')->select('name')
+                    ->where('id', '=', $id)
+                    ->first();
+                
+                $attributes['name'] = $templates->name;
+
+                $checklists = DB::table('checklists')->select('description','due_unit','due_interval')
+                    ->where('template_id', '=', $id)
+                    ->first();
+
+                $attributes['checklists'] = $checklists;
+
+
+                $items = DB::table('items')->select('description','urgency','due_unit','due_interval')
+                    ->where('template_id', '=', $id)
+                    ->get();
+
+                $attributes['items'] = $items;
+
+                $response['data']['id']         = $id;
+                $response['data']['type']       = 'templates';
+                $response['data']['attributes'] = $attributes;
+
+                return response()->json($response,200);
             }
 
         } catch (\Exception $e) {
@@ -189,7 +214,7 @@ class TemplatesController extends Controller
         try {
             $reqBody['templateId'] = $id;
             $validator = \Validator::make($reqBody, [
-                'templateId'     => 'required|numeric',
+                 'templateId'     => 'required|exists:templates,id',
             ]);
 
             if ($validator->fails()) 
