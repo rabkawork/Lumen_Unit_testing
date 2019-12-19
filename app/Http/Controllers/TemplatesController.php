@@ -12,6 +12,8 @@ use URL;
 class TemplatesController extends Controller
 {
 
+    public $url = 'api/templates/checklists';
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -24,29 +26,22 @@ class TemplatesController extends Controller
         $templatesCount = DB::table('templates')
                      ->select(DB::raw('count(*) as total'))->first();
 
-        $page_limit  = $request->page_limit  ? (int) $request->page_limit  : 0;
-        $page_offset = $request->page_offset ? (int) $request->page_offset : 0;
-
-        $count = ceil((int) $templatesCount->total / (int) $page_limit);
-        return $templatesCount->total;
-
-        $first = $count > 0 ? URL::to('/').'api/checklists/templates?page[limit]='.(int) $page_limit.'page[offset]=0' : "null";
-        $last  = $count > 0 ? URL::to('/').'api/checklists/templates?page[limit]='.(int) $page_limit.'page[offset]='.(int) $count : "null";
-
-        $next  = $count > 0 && $page_offset < $count ? 
-                    URL::to('/').'api/checklists/templates?page[limit]='.(int) $page_limit.'page[offset]='.((int) $page_limit + (int) $page_offset) : "null";
-        $prev  = $count > 0 && $page_offset > 0 ? 
-                    URL::to('/').'api/checklists/templates?page[limit]='.(int) $page_limit.'page[offset]='.((int) $page_limit - (int) $page_offset)  : "null";
+        $total = (int) $templatesCount->total;
+        $limit  = $request->page_limit  ? (int) $request->page_limit  : 0;
+        $offset = $request->page_offset ? (int) $request->page_offset : 0;
+        $count = (int) $total < $limit ? 0 : ceil((int) $total / (int) $limit);
 
         $templates = DB::table('templates')
-                ->offset((int) $request->page_offset)
-                ->limit((int) $request->page_limit)
+                ->offset((int) $offset)
+                ->limit((int) $limit)
                 ->get();
+
+        $showPaging  = $this->showPaging((int) $total,$limit,$offset,$this->url,$count);
 
         $params            = $request->all();
         $response          = [];
-        $response['meta']  = ['total' => (int)$templatesCount->total,'count' => $count];
-        $response['links'] = ['first' => $first,'last' => $last,'next' => $next,'prev' => $prev];
+        $response['meta']  = ['total' => (int) $total,'count' => $count];
+        $response['links'] = $showPaging;
     
         $data = [];
         foreach ($templates as $key => $value) {
@@ -62,7 +57,7 @@ class TemplatesController extends Controller
                 ->where('template_id', '=', $value->id)
                 ->get();
 
-            $data[] = ['name' => $templates->name,'checklists' => $checklists,'items' => $items];
+            $data[] = ['id' => $value->id,'name' => $templates->name,'checklists' => $checklists,'items' => $items];
         
         }
 
