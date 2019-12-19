@@ -14,4 +14,5 @@ class JsonRequestMiddleware
         }
         return $next($request);
     }
+    
 }
