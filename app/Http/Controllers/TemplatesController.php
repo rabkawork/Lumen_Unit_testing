@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Item;
 use App\Checklist;
 use App\Template;
+use App\History;
 use Illuminate\Http\Request;
 use DB;
 use URL;
@@ -190,54 +191,82 @@ class TemplatesController extends Controller
     public function update(Request $request,$id)
     {
         $reqBody = $request->all();
-        $reqAttributes = $reqBody['data']['attributes'];
+        $reqBody['data']['id'] = $id;
+        $reqCheckList = $reqBody['data']['checklist'];
+        $reqItem      = $reqBody['data']['items'];
+        $req          = $reqBody['data'];
 
         try {
-            $validator = \Validator::make($reqAttributes, [
-                'name'     => 'required|string',
+            $tempalateValidator = \Validator::make($req, [
+                'id'     => 'required|exists:templates,id',
             ]);
 
-            if ($validator->fails()) 
+            $checklistValidator = \Validator::make($reqCheckList, [
+                'description'     => 'required|string',
+            ]);
+            $itemValidator = \Validator::make($reqItem, [
+                '*.description'     => 'required|string',
+            ]);
+
+
+            if ($tempalateValidator->fails()) 
             {
                 //return required validation
                 return response()->json([
-                        'error'    => $validator->errors(), 
+                        'error'      => $tempalateValidator->errors(), 
+                        'type'       => 'template validation',
+                        'status'     => 400
+                        ],
+                       400);
+            }
+            elseif ($checklistValidator->fails()) 
+            {
+                //return required validation
+                return response()->json([
+                        'error'      => $checklistValidator->errors(), 
+                        'type'       => 'checklist validation',
+                        'status'     => 400
+                        ],
+                       400);
+            }
+            elseif($itemValidator->fails())
+            {
+                  //return required validation
+                  return response()->json([
+                        'error'      => $itemValidator->errors(), 
+                        'type'       => 'items validation',
                         'status'     => 400
                         ],
                        400);
             }
             else
             {
-                $template  = new Template();
-                $checklist = new Checklist();
-
-                $template->name = $reqAttributes['name'];
+                $template  = Template::find($id);
+                $template->name = $req['name'];
                 $template->save();
-                $reqAttributes['id'] = $template->id;
+                // $reqAttributes['id'] = $template->id;
 
-                $checklist->type              = 'checklists';
-                $checklist->description       = $reqAttributes['checklist']['description'];
-                $checklist->due_interval      = $reqAttributes['checklist']['due_interval'];
-                $checklist->due_unit          = $reqAttributes['checklist']['due_unit'];
-                $checklist->template_id       = $reqAttributes['id'];
+                $checklist = Checklist::where('template_id',$id)->first();
+                $checklist->description       = $reqCheckList['description'];
+                $checklist->due_interval      = $reqCheckList['due_interval'];
+                $checklist->due_unit          = $reqCheckList['due_unit'];
+                $checklist->template_id       = $id;
                 $checklist->save();
 
-                $items = $reqAttributes['items'];
-                foreach ($items as $key => $value) {
-                    $item      = new Item();
-                    $item->type         = 'checklists';
+
+                $item      = Item::where('template_id',$id);
+
+                foreach ($reqItem as $key => $value) {
+                    $item      = Item::where(['template_id' => $id,'pos' => $key])->first();
                     $item->pos          = $key;
                     $item->description  = $value['description'];
                     $item->urgency      = $value['urgency'];
                     $item->due_interval = $value['due_interval'];
                     $item->due_unit     = $value['due_unit'];
-                    $item->template_id       = $reqAttributes['id'];
-                    $item->checklist_id      = $checklist->id;
                     $item->save();
                 }
 
-
-                return response()->json($reqAttributes,201);
+                return response()->json($reqBody,200);
             }
 
          } catch (\Exception $e) {
