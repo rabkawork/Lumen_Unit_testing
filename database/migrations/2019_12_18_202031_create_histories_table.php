@@ -15,11 +15,11 @@ class CreateHistoriesTable extends Migration
     {
         Schema::create('histories', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('loggable_type');
-            $table->integer('loggable_id');
-            $table->string('action');
-            $table->integer('kwuid');
-            $table->integer('value');
+            $table->string('loggable_type')->nullable();
+            $table->integer('loggable_id')->nullable();
+            $table->string('action')->nullable();
+            $table->integer('kwuid')->nullable();
+            $table->integer('value')->nullable();
             $table->timestamps();
         });
     }

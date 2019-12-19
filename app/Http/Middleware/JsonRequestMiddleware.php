@@ -4,9 +4,12 @@ use Closure;
 use Illuminate\Http\Request;
 class JsonRequestMiddleware
 {
+
+    private $method = ['POST', 'PUT', 'PATCH'];
+
     public function handle(Request $request, Closure $next)
     {
-        if (in_array($request->method(), ['POST', 'PUT', 'PATCH'])
+        if (in_array($request->method(), $this->method)
             && $request->isJson()
         ) {
             $data = $request->json()->all();
@@ -14,5 +17,5 @@ class JsonRequestMiddleware
         }
         return $next($request);
     }
-    
+
 }

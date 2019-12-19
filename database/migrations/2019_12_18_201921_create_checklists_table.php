@@ -15,19 +15,19 @@ class CreateChecklistsTable extends Migration
     {
         Schema::create('checklists', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('type',40);
-            $table->string('attr_object_domain');
-            $table->string('attr_object_id');
-            $table->text('attr_description');
-            $table->boolean('attr_is_complete');
-            $table->dateTime('attr_completed_at', 0);  
-            $table->integer('attr_updated_by'); 
-            $table->string('attr_due');
-            $table->integer('attr_due_interval');
-            $table->string('attr_due_unit');
-            $table->integer('attr_urgency');
+            $table->string('type',40)->nullable();
+            $table->string('object_domain')->nullable();
+            $table->string('object_id')->nullable();
+            $table->text('description')->nullable();
+            $table->boolean('is_complete')->nullable();
+            $table->date('completed_at')->nullable();  
+            $table->integer('updated_by')->nullable(); 
+            $table->string('due')->nullable();
+            $table->integer('due_interval')->nullable();
+            $table->string('due_unit')->nullable();
+            $table->integer('urgency')->nullable();
             $table->integer('template_id');
-            $table->integer('pos');
+            $table->integer('pos')->nullable();
             $table->timestamps();
         });
     }
