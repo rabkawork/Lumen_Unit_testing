@@ -1,5 +1,7 @@
 <?php
 
+use App\Item;
+use App\Checklist;
 namespace App\Http\Controllers;
 
 class ItemsController extends Controller

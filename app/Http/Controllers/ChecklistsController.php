@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Item;
+use App\Checklist;
+
 class ChecklistsController extends Controller
 {
     /**

@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Item;
+use App\Checklist;
+use Illuminate\Http\Request;
+
+
 class TemplatesController extends Controller
 {
         /**
@@ -21,7 +26,7 @@ class TemplatesController extends Controller
 
     public function create(Request $request)
     {
-
+        // return $request->all();
     }
 
     public function getone(Request $request,$id)

@@ -16,8 +16,13 @@
 // });
 
 // Matches "/api/login
+
+
+
 $router->group(['prefix' => 'api'], function () use ($router) 
 {
+
+
 	$router->post('login', 'AuthController@login');
 	/**
 		Templates 
@@ -32,11 +37,11 @@ $router->group(['prefix' => 'api'], function () use ($router)
 	/**
 		Checklists 
 	**/
-	$router->get('checklists/{checklistId}', 'ChecklistsController@getone');
-	$router->patch('checklists/{checklistId}', 'ChecklistsController@update');
-	$router->delete('checklists/{checklistId}', 'ChecklistsController@remove');
-	$router->post('checklists', 'ChecklistsController@create');
-	$router->get('checklists', 'ChecklistsController@index');
+	// $router->get('checklists/{checklistId}', 'ChecklistsController@getone');
+	// $router->patch('checklists/{checklistId}', 'ChecklistsController@update');
+	// $router->delete('checklists/{checklistId}', 'ChecklistsController@remove');
+	// $router->post('checklists', 'ChecklistsController@create');
+	// $router->get('checklists', 'ChecklistsController@index');
 
 });
 
