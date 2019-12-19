@@ -14,6 +14,36 @@ class TemplatesController extends Controller
         $this->middleware('auth');
     }
 
+    public function index(Request $request)
+    {
+
+    }
+
+    public function create(Request $request)
+    {
+
+    }
+
+    public function getone(Request $request,$id)
+    {
+
+    }
+
+    public function update(Request $request,$id)
+    {
+
+    }
+
+    public function remove(Request $request,$id)
+    {
+
+    }
+
+    public function assigns(Request $request,$id)
+    {
+
+    }
+
 
     //
 }

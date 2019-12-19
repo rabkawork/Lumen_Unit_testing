@@ -13,8 +13,13 @@ class CreateHistoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('histories', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('loggable_type');
+            $table->integer('loggable_id');
+            $table->string('action');
+            $table->integer('kwuid');
+            $table->integer('value');
             $table->timestamps();
         });
     }
@@ -26,6 +31,6 @@ class CreateHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('histories');
     }
 }

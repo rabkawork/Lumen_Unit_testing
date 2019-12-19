@@ -15,5 +15,35 @@ class ItemsController extends Controller
         $this->middleware('auth');
     }
 
+    public function complete(Request $request)
+    {
+
+    }
+
+    public function incomplete(Request $request)
+    {
+
+    }
+
+    public function checklistitems(Request $request)
+    {
+
+    }
+
+    public function create(Request $request)
+    {
+
+    }
+
+    public function getone(Request $request,$id)
+    {
+
+    }
+
+    public function update(Request $request,$id)
+    {
+
+    }
+
     //
 }
