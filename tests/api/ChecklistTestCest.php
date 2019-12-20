@@ -8,8 +8,8 @@ use URL;
 //./vendor/bin/codecept run api ChecklistTestCest --steps
 class ChecklistTestCest
 {
-    private $token;
-    private $id;
+  private $token;
+  private $id;
 
 
   public function testCreateChecklists(\ApiTester $I)
