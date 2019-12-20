@@ -51,7 +51,7 @@ class ChecklistsController extends Controller
             else
             {
                 $checklist = new Checklist();
-                // $checklist->type          = 'checklists';
+                $checklist->type          = 'checklists';
                 $checklist->due           = $reqAttributes['due'];
                 $checklist->object_id     = $reqAttributes['object_id'];
                 $checklist->object_domain = $reqAttributes['object_domain'];

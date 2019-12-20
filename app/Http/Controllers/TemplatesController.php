@@ -352,7 +352,7 @@ class TemplatesController extends Controller
 
         $reqBody      = $request->all();
         $req          = $reqBody['data'];
-        try {
+        // try {
             $reqBody['templateId'] = $id;
             $validator = \Validator::make($reqBody, [
                  'templateId'     => 'exists:templates,id',
@@ -373,11 +373,8 @@ class TemplatesController extends Controller
                 $data = [];
                 foreach ($req as $key => $value) {
                     # code...
-
                     $objectId = $value['attributes']['object_id'];
-
                     $data[] = $objectId;
-
                     DB::table('checklists')->where('object_id', $objectId)
                         ->update(['object_domain' => 'deals','template_id' => $id]);   
                 }
@@ -394,16 +391,55 @@ class TemplatesController extends Controller
                 ];
                 $History->saveLog($saveLog);
 
-                return response()->json('',201);
+                $checklistsCount = DB::table('checklists')
+                     ->select(DB::raw('count(*) as total'))->where('template_id',$id)->first();
+
+                $checklists = DB::table('checklists')
+                        ->where('template_id',$id)
+                        ->get();
+
+                $count = count($req);
+                $total = $checklistsCount->total;
+
+                // set 
+                $response['meta']  = ['total' => (int) $total,'count' => $count];
+                $getChecklistsData = [];
+
+                foreach ($checklists as $key => $value) {
+                    $type    = $value->type;
+                    $links   = URL::to('/').'/api/checklists/'.$value->id;
+
+                    $self    = URL::to('/').'/api/checklists/'.$value->id.'/relationships/items/';
+                    $related = URL::to('/').'/api/checklists/'.$value->id.'/items/';
+
+                    $items = DB::table('items')->select('type','id')
+                    ->where('checklist_id', '=', $value->id)
+                    ->get();
+                    $relationship = ['items' => ['links' => ['self' => $self,'related' => $related],'data' => $items]];
+
+                    unset($value->id);
+                    unset($value->template_id);
+                    unset($value->type);
+                    unset($value->pos);
+                    $getChecklistsData[]  = [
+                                                'id' => (int) $id,
+                                                'type' => $type,
+                                                'attributes' => $checklists,
+                                                'links' => $links,
+                                                'relationship' => $relationship,
+                                            ];
+                }
+                $response['data'] = $getChecklistsData;
+                return response()->json($response,201);
             }
 
-        } catch (\Exception $e) {
-            //return error message
-            return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
-                ], 500);
-        }
+        // } catch (\Exception $e) {
+        //     //return error message
+        //     return response()->json([
+        //             'error'    => 'Server Error', 
+        //             'status'  => 500, 
+        //         ], 500);
+        // }
     }
 
 
