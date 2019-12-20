@@ -13,7 +13,7 @@ class History extends Model {
 
 	protected $guarded = [];
 
-	protected function saveLog($data)
+	public function saveLog($data)
 	{
 		return History::insert($data);
 	} 

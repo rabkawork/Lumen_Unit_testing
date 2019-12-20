@@ -118,6 +118,18 @@ class TemplatesController extends Controller
                 $response['data']['id'] = $templateId;
                 $response['data']['attributes'] = $reqAttributes;
 
+
+                $History = new History();
+                $saveLog = [
+                    'loggable_type' => 'templates',
+                    'action'        => 'create',
+                    'value'         => $templateId,
+                    'created_at'    => date('Y-m-d H:i:s'),
+                    'updated_at'    => date('Y-m-d H:i:s'),
+                ];
+                $History->saveLog($saveLog);
+
+
                 return response()->json($response,201);
             }
 
@@ -245,6 +257,17 @@ class TemplatesController extends Controller
                 $template->save();
                 // $reqAttributes['id'] = $template->id;
 
+                $History = new History();
+                $saveLog = [
+                    'loggable_type' => 'templates',
+                    'action'        => 'update',
+                    'value'         => $id,
+                    'created_at'    => date('Y-m-d H:i:s'),
+                    'updated_at'    => date('Y-m-d H:i:s'),
+                ];
+                $History->saveLog($saveLog);
+
+
                 $checklist = Checklist::where('template_id',$id)->first();
                 $checklist->description       = $reqCheckList['description'];
                 $checklist->due_interval      = $reqCheckList['due_interval'];
@@ -281,7 +304,7 @@ class TemplatesController extends Controller
     //
     public function remove($id)
     {
-        try {
+        // try {
             $reqBody['templateId'] = $id;
             $validator = \Validator::make($reqBody, [
                  'templateId'     => 'required|exists:templates,id',
@@ -301,22 +324,32 @@ class TemplatesController extends Controller
                 Template::find($id)->delete();
                 Checklist::where('template_id', $id)->delete();
                 Item::where('template_id', $id)->delete();
+                
+                $History = new History();
+                $saveLog = [
+                    'loggable_type' => 'templates',
+                    'action'        => 'remove',
+                    'value'         => $id,
+                    'created_at'    => date('Y-m-d H:i:s'),
+                    'updated_at'    => date('Y-m-d H:i:s'),
+                ];
+                $History->saveLog($saveLog);
 
                 return response()->json('',204);
             }
 
-        } catch (\Exception $e) {
-            //return error message
-            return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
-                ], 500);
-        }
+        // } catch (\Exception $e) {
+        //     //return error message
+        //     return response()->json([
+        //             'error'    => 'Server Error', 
+        //             'status'  => 500, 
+        //         ], 500);
+        // }
     }
 
     public function assigns(Request $request,$id)
     {
-
+        
     }
 
 
