@@ -21,6 +21,7 @@ class CreateChecklistsTable extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_complete')->nullable();
             $table->date('completed_at')->nullable();  
+            $table->integer('created_by')->nullable(); 
             $table->integer('updated_by')->nullable(); 
             $table->string('due')->nullable();
             $table->integer('due_interval')->nullable();

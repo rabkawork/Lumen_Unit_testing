@@ -8,6 +8,7 @@ use App\History;
 use Illuminate\Http\Request;
 use DB;
 use URL;
+use Illuminate\Support\Facades\Auth;
 
 class ChecklistsController extends Controller
 {
@@ -104,7 +105,7 @@ class ChecklistsController extends Controller
             }
             else
             {
-
+                $user = Auth::user();
 
                 $checklist = new Checklist();
                 $checklist->type          = 'checklists';
@@ -115,10 +116,13 @@ class ChecklistsController extends Controller
                 $checklist->urgency       = $reqAttributes['urgency'];
                 $checklist->task_id       = $reqAttributes['task_id'];
                 $checklist->template_id   = 0;
+
+                $checklist->is_complete   = isset($reqAttributes['is_complete']) ? (bool) $reqAttributes['is_complete'] : false;
+                $checklist->completed_at  = isset($reqAttributes['completed_at']) ? $reqAttributes['completed_at'] : '';
                 // $checklist->links         = json_encode($links);
                 $checklist->save();
                 $id = $checklist->id;
-                $links = ['links' => ['self' => URL::to('/').'/checklists/'.$id]];
+                $links = ['links' => ['self' => URL::to('/').'/api/checklists/'.$id]];
                 $updateChecklist = Checklist::find($id);
                 $updateChecklist->links = json_encode($links,true);
                 $updateChecklist->save();
@@ -258,9 +262,14 @@ class ChecklistsController extends Controller
                 $checklist->object_id     = $reqAttributes['object_id'];
                 $checklist->object_domain = $reqAttributes['object_domain'];
                 $checklist->description   = $reqAttributes['description'];
-                $checklist->completed_at  = $reqAttributes['completed_at'];
-                $checklist->is_complete   = $reqAttributes['is_completed'];
+                // $checklist->completed_at  = $reqAttributes['completed_at'];
+                // $checklist->is_complete   = $reqAttributes['is_completed'];
                 $checklist->template_id   = 0;
+
+                $checklist->is_complete   = isset($reqAttributes['is_complete']) ? (bool) $reqAttributes['is_complete'] : false;
+                $checklist->completed_at  = isset($reqAttributes['completed_at']) ? $reqAttributes['completed_at'] : '';
+
+
                 $checklist->links         = json_encode($reqData['links']);
                 $checklist->save();
 

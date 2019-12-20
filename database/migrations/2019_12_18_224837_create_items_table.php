@@ -19,11 +19,13 @@ class CreateItemsTable extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_complete')->nullable();
             $table->dateTime('completed_at', 0)->nullable();  
+            $table->integer('created_by')->nullable(); 
             $table->integer('updated_by')->nullable(); 
             $table->string('due')->nullable();
             $table->integer('due_interval')->nullable();
             $table->string('due_unit')->nullable();
             $table->integer('urgency')->nullable();
+            $table->string('assignee_id',80)->nullable();
             $table->integer('checklist_id')->nullable();
             $table->integer('template_id')->nullable();
             $table->integer('pos')->nullable();

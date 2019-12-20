@@ -40,15 +40,6 @@ $router->group(['prefix' => 'api'], function () use ($router)
 	$router->post('checklists', 'ChecklistsController@create');
 	$router->get('checklists', 'ChecklistsController@index');
 
-
-	/**
-		Histories
-	**/
-	// $router->get('checklists/histories', 'HistoriesController@index'); //
-	// $router->get('checklists/histories/{historyId}', 'HistoriesController@getone'); //
-
-
-
 	/**
 		items
 	**/
@@ -57,13 +48,22 @@ $router->group(['prefix' => 'api'], function () use ($router)
 	$router->get('checklists/{checklistId}/items', 'ItemsController@listAllitems');
 	$router->post('checklists/{checklistId}/items', 'ItemsController@createchecklistitem');
 
-	// $router->get('checklists/{checklistId}/items/{itemId}', 'ItemsController@getchecklistitem');
-	// $router->patch('checklists/{checklistId}/items/{itemId}', 'ItemsController@updatechecklistitem');
-	// $router->delete('checklists/{checklistId}/items/{itemId}', 'ItemsController@deletechecklistitems');
-	// $router->post('checklists/{checklistId}/items/_bulk', 'ItemsController@updatechecklistitemsbulk');
+	$router->get('checklists/{checklistId}/items/{itemId}', 'ItemsController@getchecklistitem');
+	$router->patch('checklists/{checklistId}/items/{itemId}', 'ItemsController@updatechecklistitem');
+	$router->delete('checklists/{checklistId}/items/{itemId}', 'ItemsController@deletechecklistitems');
+	$router->post('checklists/{checklistId}/items/_bulk', 'ItemsController@updatechecklistitemsbulk');
 	
 	// $router->get('checklists/items/sumaries', 'ItemsController@sumaries');
 	// $router->get('checklists/items', 'ItemsController@getall');
+
+
+
+	/**
+		Histories
+	**/
+	// $router->get('checklists/histories', 'HistoriesController@index'); //
+	// $router->get('checklists/histories/{historyId}', 'HistoriesController@getone'); //
+
 
 
 });

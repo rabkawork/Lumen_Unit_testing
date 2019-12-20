@@ -9,6 +9,7 @@ use App\History;
 use Illuminate\Http\Request;
 use DB;
 use URL;
+use Illuminate\Support\Facades\Auth;
 
 class TemplatesController extends Controller
 {
