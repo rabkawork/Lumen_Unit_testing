@@ -22,7 +22,7 @@ class TemplatesController extends Controller
     }
 
     public function index(Request $request)
-    {   
+    {
         try {
 
             $templatesCount = DB::table('templates')
@@ -44,7 +44,7 @@ class TemplatesController extends Controller
             $response          = [];
             $response['meta']  = ['total' => (int) $total,'count' => $count];
             $response['links'] = $showPaging;
-        
+
             $data = [];
             foreach ($templates as $key => $value) {
                 $templates = DB::table('templates')->select('name')
@@ -60,7 +60,7 @@ class TemplatesController extends Controller
                     ->get();
 
                 $data[] = ['id' => $value->id,'name' => $templates->name,'checklists' => $checklists,'items' => $items];
-            
+
             }
 
             $response['data']  = $data;
@@ -70,8 +70,8 @@ class TemplatesController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
 
@@ -86,11 +86,11 @@ class TemplatesController extends Controller
                 'name'     => 'required|string',
             ]);
 
-            if ($validator->fails()) 
+            if ($validator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'    => $validator->errors(), 
+                        'error'    => $validator->errors(),
                         'status'     => 400
                         ],
                        400);
@@ -146,26 +146,26 @@ class TemplatesController extends Controller
          } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
 
     }
 
     public function getone(Request $request,$id)
-    {   
+    {
         try {
             $reqBody['templateId'] = $id;
             $validator = \Validator::make($reqBody, [
                 'templateId'     => 'exists:templates,id',
             ]);
 
-            if ($validator->fails()) 
+            if ($validator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                        404);
@@ -177,7 +177,7 @@ class TemplatesController extends Controller
                 $templates = DB::table('templates')->select('name')
                     ->where('id', '=', $id)
                     ->first();
-                
+
                 $attributes['name'] = $templates->name;
 
                 $checklists = DB::table('checklists')->select('description','due_unit','due_interval')
@@ -203,8 +203,8 @@ class TemplatesController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
     }
@@ -230,21 +230,21 @@ class TemplatesController extends Controller
             ]);
 
 
-            if ($tempalateValidator->fails()) 
+            if ($tempalateValidator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'      => $tempalateValidator->errors(), 
+                        'error'      => $tempalateValidator->errors(),
                         'type'       => 'template validation',
                         'status'     => 400
                         ],
                        400);
             }
-            elseif ($checklistValidator->fails()) 
+            elseif ($checklistValidator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'      => $checklistValidator->errors(), 
+                        'error'      => $checklistValidator->errors(),
                         'type'       => 'checklist validation',
                         'status'     => 400
                         ],
@@ -254,7 +254,7 @@ class TemplatesController extends Controller
             {
                   //return required validation
                   return response()->json([
-                        'error'      => $itemValidator->errors(), 
+                        'error'      => $itemValidator->errors(),
                         'type'       => 'items validation',
                         'status'     => 400
                         ],
@@ -304,8 +304,8 @@ class TemplatesController extends Controller
          } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
 
@@ -320,11 +320,11 @@ class TemplatesController extends Controller
                  'templateId'     => 'required|exists:templates,id',
             ]);
 
-            if ($validator->fails()) 
+            if ($validator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                        404);
@@ -334,7 +334,7 @@ class TemplatesController extends Controller
                 Template::find($id)->delete();
                 Checklist::where('template_id', $id)->delete();
                 Item::where('template_id', $id)->delete();
-                
+
                 $History = new History();
                 $saveLog = [
                     'loggable_type' => 'templates',
@@ -345,14 +345,14 @@ class TemplatesController extends Controller
                 ];
                 $History->saveLog($saveLog);
 
-                return response()->json('',204);
+                return response()->json([],204);
             }
 
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
     }
@@ -368,11 +368,11 @@ class TemplatesController extends Controller
                  'templateId'     => 'exists:templates,id',
             ]);
 
-            if ($validator->fails()) 
+            if ($validator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'    => 'Not Found', 
+                        'error'    => 'Not Found',
                         'status'   => 400
                         ],
                        400);
@@ -386,11 +386,11 @@ class TemplatesController extends Controller
                     $objectId = $value['attributes']['object_id'];
                     $data[] = $objectId;
                     DB::table('checklists')->where('object_id', $objectId)
-                        ->update(['object_domain' => 'deals','template_id' => $id]);   
+                        ->update(['object_domain' => 'deals','template_id' => $id]);
                 }
 
                 $objectIds = implode(',',$data);
-                
+
                 $History = new History();
                 $saveLog = [
                     'loggable_type' => 'templates',
@@ -411,7 +411,7 @@ class TemplatesController extends Controller
                 $count = count($req);
                 $total = $checklistsCount->total;
 
-                // set 
+                // set
                 $response['meta']  = ['total' => (int) $total,'count' => $count];
                 $getChecklistsData = [];
 
@@ -446,8 +446,8 @@ class TemplatesController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
     }

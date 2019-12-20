@@ -5,7 +5,7 @@ use App\History;
 use Illuminate\Http\Request;
 use DB;
 use URL;
-
+//./vendor/bin/codecept run api TemplateTestCest --steps
 class TemplateTestCest
 {
     private $token;
@@ -27,7 +27,7 @@ class TemplateTestCest
         $I->seeResponseIsJson();
     }
 
-  
+
 
     public function testCreateTemplates(\ApiTester $I)
 	{
@@ -63,7 +63,7 @@ class TemplateTestCest
         $I->amBearerAuthenticated($this->token);
         $I->sendPOST('api/checklists/templates', $sendJson);
         $response = json_decode($I->grabResponse());
-        $this->id = $response->data->id;     
+        $this->id = $response->data->id;
         $I->seeResponseCodeIs(201); // 200
         $I->seeResponseIsJson();
     }
@@ -104,7 +104,7 @@ class TemplateTestCest
         $I->sendPOST('api/checklists/templates', $sendJson);
         $I->seeResponseCodeIs(400); // 200
         $I->seeResponseIsJson();
-     } 
+     }
 
 
      public function testGetOneTemplates(\ApiTester $I)
@@ -130,19 +130,20 @@ class TemplateTestCest
      {
          $I->wantToTest('Delete Template');
          $I->amBearerAuthenticated($this->token);
-         $I->sendGET('api/checklists/templates/'.$this->id, []);
-         $I->seeResponseCodeIs(200); // 200
-         $I->seeResponseIsJson();
-         $I->seeResponseContainsJson(['error' => 'Not Found']);
+         $I->sendDELETE('api/checklists/templates/'.$this->id, []);
+         $I->seeResponseCodeIs(204); // 200
+
+         $response = json_decode($I->grabResponse());
+        //  echo json_encode($response);
      }
 
      public function testDeleteTemplatesValidation(\ApiTester $I)
      {
          $I->wantToTest('Delete Template');
          $I->amBearerAuthenticated($this->token);
-         $I->sendGET('api/checklists/templates/100101', []);
+         $I->sendDELETE('api/checklists/templates/100101', []);
          $I->seeResponseCodeIs(404); // 200
          $I->seeResponseIsJson();
-         $I->seeResponseContainsJson(['error' => 'Not Found']);
+        //  $I->seeResponseContainsJson(['error' => 'Not Found']);
      }
 }
