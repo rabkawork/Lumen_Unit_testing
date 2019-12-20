@@ -22,7 +22,7 @@ class TemplatesController extends Controller
 
     public function index(Request $request)
     {   
-
+        try {
 
         $templatesCount = DB::table('templates')
                      ->select(DB::raw('count(*) as total'))->first();
@@ -125,7 +125,7 @@ class TemplatesController extends Controller
          } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => $e, 
+                    'error'    => 'Server Error', 
                     'status'  => 500, 
                 ], 500);
         }
@@ -137,17 +137,17 @@ class TemplatesController extends Controller
         try {
             $reqBody['templateId'] = $id;
             $validator = \Validator::make($reqBody, [
-                'templateId'     => 'required|exists:templates,id',
+                'templateId'     => 'exists:templates,id',
             ]);
 
             if ($validator->fails()) 
             {
                 //return required validation
                 return response()->json([
-                        'error'    => $validator->errors(), 
-                        'status'     => 400
+                        'error'      => 'Not Found', 
+                        'status'     => 404
                         ],
-                       400);
+                       404);
             }
             else
             {
@@ -182,7 +182,7 @@ class TemplatesController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => $e, 
+                    'error'    => 'Server Error', 
                     'status'  => 500, 
                 ], 500);
         }
@@ -272,7 +272,7 @@ class TemplatesController extends Controller
          } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => $e, 
+                    'error'    => 'Server Error', 
                     'status'  => 500, 
                 ], 500);
         }
@@ -309,7 +309,7 @@ class TemplatesController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => $e, 
+                    'error'    => 'Server Error', 
                     'status'  => 500, 
                 ], 500);
         }
