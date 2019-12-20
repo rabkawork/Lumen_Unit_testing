@@ -27,10 +27,17 @@ class ItemsController extends Controller
 
     }
 
-    public function checklistitems(Request $request)
+    public function summary(Request $request)
     {
 
     }
+
+
+    public function getall(Request $request)
+    {
+
+    }
+
 
     public function create(Request $request)
     {
@@ -43,6 +50,11 @@ class ItemsController extends Controller
     }
 
     public function update(Request $request,$id)
+    {
+
+    }
+
+    public function updatebulk(Request $request,$id)
     {
 
     }

@@ -171,17 +171,20 @@ class ChecklistsController extends Controller
     public function update(Request $request,$id)
     {
         $reqBody = $request->all();
+        $reqAttributes = $reqBody['data']['attributes'];
+        $reqData       = $reqBody['data'];
+
         try{
 
             $validator = \Validator::make($reqBody, [
-                'data'             => 'required',
-                'data.type'        => 'required',
-                'data.id'          => 'required',
+                'data'                           => 'required',
+                'data.type'                      => 'required',
+                'data.id'                        => 'required',
                 'data.attributes.object_domain'  => 'required',
                 'data.attributes.object_id'      => 'required',
                 'data.attributes.description'    => 'required',
-                'data.attributes.links'          => 'required',
-                'data.attributes.links.self'     => 'required',
+                'data.links'          => 'required',
+                'data.links.self'     => 'required',
             ]);
 
             if ($validator->fails()) 
@@ -196,6 +199,37 @@ class ChecklistsController extends Controller
             else
             {
 
+                $checklist = Checklist::find($id);
+                $checklist->type          = $reqData['type'];
+                $checklist->object_id     = $reqAttributes['object_id'];
+                $checklist->object_domain = $reqAttributes['object_domain'];
+                $checklist->description   = $reqAttributes['description'];
+                $checklist->completed_at  = $reqAttributes['completed_at'];
+                $checklist->is_complete   = $reqAttributes['is_completed'];
+                $checklist->template_id   = 0;
+                $checklist->links         = json_encode($reqData['links']);
+                $checklist->save();
+
+    
+
+                $checklists = DB::table('checklists')
+                        ->where('id',$id)
+                        ->first();
+
+                $type = $checklists->type;
+                $data = [];
+                unset($checklists->id);
+                unset($checklists->template_id);
+                unset($checklists->type);
+                unset($checklists->pos);
+                $response  = ['data' => [
+                                'id' => (int) $id,
+                                'type' => $type,
+                                'attributes' => $checklists,
+                                'links' => $reqData['links']['self']
+                                ]
+                             ];
+                return $reqBody;
             }
 
         }catch (\Exception $e) {
