@@ -268,7 +268,8 @@ class ChecklistsController extends Controller
                 $checklist->template_id   = 0;
 
                 $checklist->is_complete   = isset($reqAttributes['is_complete']) ? (bool) $reqAttributes['is_complete'] : false;
-                $checklist->completed_at  = isset($reqAttributes['completed_at']) ? $reqAttributes['completed_at'] : '';
+                if(isset($reqAttributes['completed_at']))
+                    $checklist->completed_at  = isset($reqAttributes['completed_at']) ? $reqAttributes['completed_at'] : '';
 
 
                 $checklist->links         = json_encode($reqData['links']);
