@@ -11,6 +11,9 @@ use URL;
 
 class ChecklistsController extends Controller
 {
+
+    public $url = 'api/checklists';
+
     /**
      * Create a new controller instance.
      *
@@ -24,9 +27,9 @@ class ChecklistsController extends Controller
     public function index(Request $request)
     {
 
-        try {
+        // try {
 
-            $templatesCount = DB::table('checklists')
+            $checklistsCount = DB::table('checklists')
                          ->select(DB::raw('count(*) as total'))->first();
 
             $total = (int) $checklistsCount->total;
@@ -47,34 +50,34 @@ class ChecklistsController extends Controller
             $response['links'] = $showPaging;
         
             $data = [];
-            foreach ($templates as $key => $value) {
-                $templates = DB::table('templates')->select('name')
-                    ->where('id', '=', $value->id)
-                    ->first();
+            foreach ($checklists as $key => $value) {
 
-                $checklists = DB::table('checklists')->select('description','due_unit','due_interval')
-                    ->where('template_id', '=', $value->id)
-                    ->first();
+                $type = $value->type;
+                $id = $value->id;
 
-                $items = DB::table('items')->select('description','urgency','due_unit','due_interval')
-                    ->where('template_id', '=', $value->id)
-                    ->get();
-
-                $data[] = ['id' => $value->id,'name' => $templates->name,'checklists' => $checklists,'items' => $items];
+                unset($value->id);
+                unset($value->template_id);
+                unset($value->type);
+                unset($value->pos);
+                $data[]  = [
+                                'id' => (int) $id,
+                                'type' => $type,
+                                'attributes' => $value,
+                                'links' => ['self' => URL::to('/').'/checklists/'.$id]
+                        ];
             
             }
-
             $response['data']  = $data;
 
             return response()->json($response,200);
 
-        } catch (\Exception $e) {
-            //return error message
-            return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
-                ], 500);
-        }
+        // } catch (\Exception $e) {
+        //     //return error message
+        //     return response()->json([
+        //             'error'    => 'Server Error', 
+        //             'status'  => 500, 
+        //         ], 500);
+        // }
     }
 
     public function create(Request $request)
