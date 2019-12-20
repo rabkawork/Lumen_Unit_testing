@@ -164,10 +164,41 @@ class ItemsTestCest
           }';
 
         $I->haveHttpHeader('Content-Type','application/json');
- 		$I->wantToTest('Create Checklist Item');
+ 		$I->wantToTest('Update Checklist Item');
         $I->amBearerAuthenticated($this->token);
-        $I->sendPATCH('api/checklists/1000/items', $sendJson);
+        $I->sendPATCH('api/checklists/1/items/1000', $sendJson);
         $I->seeResponseCodeIs(404); // 200
+        $I->seeResponseIsJson();
+    }
+
+    public function testUpdateChecklistItem(\ApiTester $I)
+	{
+        $sendJson = '{
+            "data": {
+              "attribute": {
+                "description": "Need to verify this guy house.",
+                "due": "2019-01-19 18:34:51",
+                "urgency": "2",
+                "assignee_id": 123
+              }
+            }
+          }';
+
+        $I->haveHttpHeader('Content-Type','application/json');
+ 		$I->wantToTest('Update Checklist Item');
+        $I->amBearerAuthenticated($this->token);
+        $I->sendPATCH('api/checklists/1/items/1', $sendJson);
+        $I->seeResponseCodeIs(200); // 200
+        $I->seeResponseIsJson();
+    }
+
+    public function testDeleteChecklistItem(\ApiTester $I)
+	{
+        $I->haveHttpHeader('Content-Type','application/json');
+ 		$I->wantToTest('Update Checklist Item');
+        $I->amBearerAuthenticated($this->token);
+        $I->sendDELETE('api/checklists/1/items/1', []);
+        $I->seeResponseCodeIs(200); // 200
         $I->seeResponseIsJson();
     }
 }
