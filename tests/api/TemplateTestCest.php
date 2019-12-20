@@ -126,6 +126,79 @@ class TemplateTestCest
          $I->seeResponseContainsJson(['error' => 'Not Found']);
      }
 
+     public function testUpdateTemplates(\ApiTester $I)
+     {
+         $sendJson = '{
+             "data": {
+               "name": "foo templates",
+               "checklist": {
+                 "description": "my checklist",
+                 "due_interval": 10,
+                 "due_unit": "hour"
+               },
+               "items": [
+                 {
+                   "description": "my foos item",
+                   "urgency": 2,
+                   "due_interval": 40,
+                   "due_unit": "minute"
+                 },
+                 {
+                   "description": "my bars item",
+                   "urgency": 3,
+                   "due_interval": 30,
+                   "due_unit": "minute"
+                 }
+               ]
+             }
+           }';
+
+         $I->haveHttpHeader('Content-Type','application/json');
+         $I->wantToTest('Update Templates');
+         $I->amBearerAuthenticated($this->token);
+         $I->sendPATCH('api/checklists/templates/'.$this->id, $sendJson);
+         $response = json_decode($I->grabResponse());
+         $I->seeResponseCodeIs(200); // 200
+         $I->seeResponseIsJson();
+     }
+
+    public function testUpdateTemplatesValidation(\ApiTester $I)
+	{
+        $sendJson = '{
+            "data": {
+              "name": "",
+              "checklist": {
+                "description": "my checklist",
+                "due_interval": 10,
+                "due_unit": "hour"
+              },
+              "items": [
+                {
+                  "description": "my foos item",
+                  "urgency": 2,
+                  "due_interval": 40,
+                  "due_unit": "minute"
+                },
+                {
+                  "description": "my bars item",
+                  "urgency": 3,
+                  "due_interval": 30,
+                  "due_unit": "minute"
+                }
+              ]
+            }
+          }';
+
+        $I->haveHttpHeader('Content-Type','application/json');
+        $I->wantToTest('Update Templates');
+        $I->amBearerAuthenticated($this->token);
+        $I->sendPATCH('api/checklists/templates/10000', $sendJson);
+        $response = json_decode($I->grabResponse());
+        $I->seeResponseCodeIs(400); // 200
+        $I->seeResponseIsJson();
+    }
+
+
      public function testDeleteTemplates(\ApiTester $I)
      {
          $I->wantToTest('Delete Template');
@@ -146,4 +219,13 @@ class TemplateTestCest
          $I->seeResponseIsJson();
         //  $I->seeResponseContainsJson(['error' => 'Not Found']);
      }
+
+
+
+
+
+
+
+
+
 }
