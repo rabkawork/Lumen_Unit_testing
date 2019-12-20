@@ -66,7 +66,75 @@ class ChecklistsController extends Controller
 
     public function create(Request $request)
     {
-        
+        $reqBody = $request->all();
+        $reqAttributes = $reqBody['data']['attributes'];
+        try{
+            $validator = \Validator::make($reqBody, [
+                'data'             => 'required',
+                'data.attributes'  => 'required',
+                'data.attributes.object_domain'  => 'required',
+                'data.attributes.object_id'      => 'required',
+                'data.attributes.description'    => 'required',
+            ]);
+
+            if ($validator->fails()) 
+            {
+                //return required validation
+                return response()->json([
+                        'error'      => $validator->errors(), 
+                        'status'     => 404
+                        ],
+                       404);
+            }
+            else
+            {
+                $checklist = new Checklist();
+                // $checklist->type          = 'checklists';
+                $checklist->due           = $reqAttributes['due'];
+                $checklist->object_id     = $reqAttributes['object_id'];
+                $checklist->object_domain = $reqAttributes['object_domain'];
+                $checklist->description   = $reqAttributes['description'];
+                $checklist->urgency       = $reqAttributes['urgency'];
+                $checklist->task_id       = $reqAttributes['task_id'];
+                $checklist->template_id   = 0;
+                $checklist->save();
+                $id = $checklist->id;
+
+                foreach ($reqAttributes['items'] as $key => $value) {
+                    $item      = new Item();
+                    $item->type         = 'checklists';
+                    $item->pos          = $key;
+                    $item->description  = $value;
+                    $item->checklist_id = $id;
+                    $item->save();
+                }
+
+                $checklists = DB::table('checklists')
+                        ->where('id',$id)
+                        ->first();
+
+                $type = $checklists->type;
+                $data = [];
+                unset($checklists->id);
+                unset($checklists->template_id);
+                unset($checklists->type);
+                unset($checklists->pos);
+                $response  = ['data' => [
+                                'id' => (int) $id,
+                                'type' => $type,
+                                'attributes' => $checklists,
+                                'links' => URL::to('/').'/checklists/'.$id
+                                ]
+                             ];
+                return response()->json($response,201);
+            }
+        }catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
+        }
     }
 
     public function getone(Request $request,$id)
@@ -165,11 +233,6 @@ class ChecklistsController extends Controller
                     'status'  => 500, 
                 ], 500);
         }
-    }
-
-    public function listofchecklists(Request $request)
-    {
-        
     }
 
     //

@@ -16,7 +16,7 @@ class AddTaskIdChecklists extends Migration
         //
 
         Schema::table('checklists', function($table) {
-             $table->integer('paid')->after('pos');
+             $table->integer('task_id')->nullable()->after('pos');
         });
     }
 

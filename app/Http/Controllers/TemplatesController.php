@@ -22,7 +22,6 @@ class TemplatesController extends Controller
 
     public function index(Request $request)
     {   
-        try {
 
         $templatesCount = DB::table('templates')
                      ->select(DB::raw('count(*) as total'))->first();
@@ -72,7 +71,7 @@ class TemplatesController extends Controller
         $reqBody = $request->all();
         $reqAttributes = $reqBody['data']['attributes'];
 
-        try {
+        // try {
             $validator = \Validator::make($reqAttributes, [
                 'name'     => 'required|string',
             ]);
@@ -105,7 +104,7 @@ class TemplatesController extends Controller
                 $items = $reqAttributes['items'];
                 foreach ($items as $key => $value) {
                     $item      = new Item();
-                    $item->type         = 'checklists';
+                    // $item->type         = 'checklists';
                     $item->pos          = $key;
                     $item->description  = $value['description'];
                     $item->urgency      = $value['urgency'];
@@ -122,13 +121,13 @@ class TemplatesController extends Controller
                 return response()->json($response,201);
             }
 
-         } catch (\Exception $e) {
-            //return error message
-            return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
-                ], 500);
-        }
+        //  } catch (\Exception $e) {
+        //     //return error message
+        //     return response()->json([
+        //             'error'    => 'Server Error', 
+        //             'status'  => 500, 
+        //         ], 500);
+        // }
 
     }
 
