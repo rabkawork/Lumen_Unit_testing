@@ -19,15 +19,90 @@ class ItemsController extends Controller
 
     public function complete(Request $request)
     {
+        $reqBody = $request->all();
+        $reqData = $reqBody['data'];
+        
+        try{
+            $getIds = [];
+            foreach ($reqData as $key => $value) {
+                $getIds[] = $value->item_id;
+            }
+            $items = DB::table('items')
+                    ->select('id','item_id','is_complete','checklist_id')
+                    ->whereIn('item_id', $getIds)
+                    ->where('is_complete',true)
+                    ->get();
+            $response['data'] = $items;
+            return response()->json($response,200);
 
+        } catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
+        }
     }
 
     public function incomplete(Request $request)
     {
+        $reqBody = $request->all();
+        $reqData = $reqBody['data'];
+        
+        try{
+            $getIds = [];
+            foreach ($reqData as $key => $value) {
+                $getIds[] = $value->item_id;
+            }
+            $items = DB::table('items')
+                    ->select('id','item_id','is_complete','checklist_id')
+                    ->whereIn('item_id', $getIds)
+                    ->where('is_complete',false)
+                    ->get();
+            $response['data'] = $items;
+            return response()->json($response,200);
+        } catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
+        }
+    }
+
+    public function listAllitems(Request $request,$checklistId)
+    {
 
     }
 
-    public function summary(Request $request)
+
+    public function createChecklistitem(Request $request,$checklistId)
+    {
+
+    }
+
+    public function getchecklistitem(Request $request,$checklistId,$itemId)
+    {
+
+    }
+
+    public function updatechecklistitem(Request $request,$checklistId,$itemId)
+    {
+
+    }
+
+    public function deletechecklistitems(Request $request,$checklistId,$itemId)
+    {
+
+    }
+
+    public function updatechecklistitemsbulk(Request $request,$checklistId,$itemId)
+    {
+
+    }
+
+
+    public function sumaries(Request $request)
     {
 
     }
@@ -38,26 +113,4 @@ class ItemsController extends Controller
 
     }
 
-
-    public function create(Request $request)
-    {
-
-    }
-
-    public function getone(Request $request,$id)
-    {
-
-    }
-
-    public function update(Request $request,$id)
-    {
-
-    }
-
-    public function updatebulk(Request $request,$id)
-    {
-
-    }
-
-    //
 }

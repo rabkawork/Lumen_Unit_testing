@@ -27,7 +27,7 @@ class ChecklistsController extends Controller
     public function index(Request $request)
     {
 
-        // try {
+        try {
 
             $checklistsCount = DB::table('checklists')
                          ->select(DB::raw('count(*) as total'))->first();
@@ -71,13 +71,13 @@ class ChecklistsController extends Controller
 
             return response()->json($response,200);
 
-        // } catch (\Exception $e) {
-        //     //return error message
-        //     return response()->json([
-        //             'error'    => 'Server Error', 
-        //             'status'  => 500, 
-        //         ], 500);
-        // }
+        } catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
+        }
     }
 
     public function create(Request $request)
