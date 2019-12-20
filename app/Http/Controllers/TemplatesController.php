@@ -22,48 +22,58 @@ class TemplatesController extends Controller
 
     public function index(Request $request)
     {   
+        try {
 
-        $templatesCount = DB::table('templates')
-                     ->select(DB::raw('count(*) as total'))->first();
+            $templatesCount = DB::table('templates')
+                         ->select(DB::raw('count(*) as total'))->first();
 
-        $total = (int) $templatesCount->total;
-        $limit  = $request->page_limit  ? (int) $request->page_limit  : 0;
-        $offset = $request->page_offset ? (int) $request->page_offset : 0;
-        $count = (int) $total < $limit ? 0 : ceil((int) $total / (int) $limit);
+            $total = (int) $templatesCount->total;
+            $limit  = $request->page_limit  ? (int) $request->page_limit  : 0;
+            $offset = $request->page_offset ? (int) $request->page_offset : 0;
+            $count = (int) $total < $limit ? 0 : ceil((int) $total / (int) $limit);
 
-        $templates = DB::table('templates')
-                ->offset((int) $offset)
-                ->limit((int) $limit)
-                ->get();
+            $templates = DB::table('templates')
+                    ->offset((int) $offset)
+                    ->limit((int) $limit)
+                    ->get();
 
-        $showPaging  = $this->showPaging((int) $total,$limit,$offset,$this->url,$count);
+            $showPaging  = $this->showPaging((int) $total,$limit,$offset,$this->url,$count);
 
-        $params            = $request->all();
-        $response          = [];
-        $response['meta']  = ['total' => (int) $total,'count' => $count];
-        $response['links'] = $showPaging;
-    
-        $data = [];
-        foreach ($templates as $key => $value) {
-            $templates = DB::table('templates')->select('name')
-                ->where('id', '=', $value->id)
-                ->first();
-
-            $checklists = DB::table('checklists')->select('description','due_unit','due_interval')
-                ->where('template_id', '=', $value->id)
-                ->first();
-
-            $items = DB::table('items')->select('description','urgency','due_unit','due_interval')
-                ->where('template_id', '=', $value->id)
-                ->get();
-
-            $data[] = ['id' => $value->id,'name' => $templates->name,'checklists' => $checklists,'items' => $items];
+            $params            = $request->all();
+            $response          = [];
+            $response['meta']  = ['total' => (int) $total,'count' => $count];
+            $response['links'] = $showPaging;
         
+            $data = [];
+            foreach ($templates as $key => $value) {
+                $templates = DB::table('templates')->select('name')
+                    ->where('id', '=', $value->id)
+                    ->first();
+
+                $checklists = DB::table('checklists')->select('description','due_unit','due_interval')
+                    ->where('template_id', '=', $value->id)
+                    ->first();
+
+                $items = DB::table('items')->select('description','urgency','due_unit','due_interval')
+                    ->where('template_id', '=', $value->id)
+                    ->get();
+
+                $data[] = ['id' => $value->id,'name' => $templates->name,'checklists' => $checklists,'items' => $items];
+            
+            }
+
+            $response['data']  = $data;
+
+            return response()->json($response,200);
+
+        } catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
         }
 
-        $response['data']  = $data;
-
-        return response()->json($response,200);
     }
 
     public function create(Request $request)
