@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTaskIdChecklists extends Migration
+class AddLinksChecklists extends Migration
 {
     /**
      * Run the migrations.
@@ -16,11 +16,13 @@ class AddTaskIdChecklists extends Migration
         //
 
         Schema::table('checklists', function($table) {
-             $table->integer('task_id')->nullable()->after('pos');
+             $table->text('links')->nullable()->after('pos');
         });
 
-       
 
+        Schema::table('items', function($table) {
+             $table->text('links')->nullable()->after('pos');
+        });
     }
 
     /**

@@ -352,7 +352,7 @@ class TemplatesController extends Controller
 
         $reqBody      = $request->all();
         $req          = $reqBody['data'];
-        // try {
+        try {
             $reqBody['templateId'] = $id;
             $validator = \Validator::make($reqBody, [
                  'templateId'     => 'exists:templates,id',
@@ -433,13 +433,13 @@ class TemplatesController extends Controller
                 return response()->json($response,201);
             }
 
-        // } catch (\Exception $e) {
-        //     //return error message
-        //     return response()->json([
-        //             'error'    => 'Server Error', 
-        //             'status'  => 500, 
-        //         ], 500);
-        // }
+        } catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
+        }
     }
 
 

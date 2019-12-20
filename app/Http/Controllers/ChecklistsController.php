@@ -50,6 +50,8 @@ class ChecklistsController extends Controller
             }
             else
             {
+
+
                 $checklist = new Checklist();
                 $checklist->type          = 'checklists';
                 $checklist->due           = $reqAttributes['due'];
@@ -59,8 +61,15 @@ class ChecklistsController extends Controller
                 $checklist->urgency       = $reqAttributes['urgency'];
                 $checklist->task_id       = $reqAttributes['task_id'];
                 $checklist->template_id   = 0;
+                // $checklist->links         = json_encode($links);
                 $checklist->save();
                 $id = $checklist->id;
+                $links = ['links' => ['self' => URL::to('/').'/checklists/'.$id]];
+                $updateChecklist = Checklist::find($id);
+                $updateChecklist->links = json_encode($links,true);
+                $updateChecklist->save();
+
+
 
                 foreach ($reqAttributes['items'] as $key => $value) {
                     $item      = new Item();
@@ -161,7 +170,41 @@ class ChecklistsController extends Controller
 
     public function update(Request $request,$id)
     {
+        $reqBody = $request->all();
+        try{
 
+            $validator = \Validator::make($reqBody, [
+                'data'             => 'required',
+                'data.type'        => 'required',
+                'data.id'          => 'required',
+                'data.attributes.object_domain'  => 'required',
+                'data.attributes.object_id'      => 'required',
+                'data.attributes.description'    => 'required',
+                'data.attributes.links'          => 'required',
+                'data.attributes.links.self'     => 'required',
+            ]);
+
+            if ($validator->fails()) 
+            {
+                //return required validation
+                return response()->json([
+                        'error'      => $validator->errors(), 
+                        'status'     => 404
+                        ],
+                       404);
+            }
+            else
+            {
+
+            }
+
+        }catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
+        }
     }
 
     public function remove(Request $request,$id)
