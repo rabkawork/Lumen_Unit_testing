@@ -16,9 +16,6 @@
 // });
 
 // Matches "/api/login
-
-
-
 $router->group(['prefix' => 'api'], function () use ($router) 
 {
 
@@ -42,6 +39,13 @@ $router->group(['prefix' => 'api'], function () use ($router)
 	$router->delete('checklists/{checklistId}', 'ChecklistsController@remove');
 	$router->post('checklists', 'ChecklistsController@create');
 	$router->get('checklists', 'ChecklistsController@index');
+
+
+	/**
+		Histories
+	**/
+	$router->get('checklists/histories', 'HistoriesController@index');
+	$router->get('checklists/histories/{historyId}', 'HistoriesController@getone');
 
 });
 
