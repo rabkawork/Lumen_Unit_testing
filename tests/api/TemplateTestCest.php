@@ -1,13 +1,8 @@
 <?php 
 
+// ./vendor/bin/codecept run api UserAuthTestCest --steps
+
 class TemplateTestCest
 {
-    public function _before(ApiTester $I)
-    {
-    }
-
-    // tests
-    public function tryToTest(ApiTester $I)
-    {
-    }
+    
 }

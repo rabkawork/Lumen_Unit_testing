@@ -16,9 +16,10 @@
 // });
 
 // Matches "/api/login
+
+
 $router->group(['prefix' => 'api'], function () use ($router) 
 {
-
 
 	$router->post('login', 'AuthController@login');
 	/**
@@ -42,30 +43,35 @@ $router->group(['prefix' => 'api'], function () use ($router)
 
 	/**
 		items
-	**/
+		**/
 	$router->post('checklists/complete', 'ItemsController@complete');
 	$router->post('checklists/incomplete', 'ItemsController@incomplete');
 	$router->get('checklists/{checklistId}/items', 'ItemsController@listAllitems');
 	$router->post('checklists/{checklistId}/items', 'ItemsController@createchecklistitem');
 
+	
 	$router->get('checklists/{checklistId}/items/{itemId}', 'ItemsController@getchecklistitem');
 	$router->patch('checklists/{checklistId}/items/{itemId}', 'ItemsController@updatechecklistitem');
 	$router->delete('checklists/{checklistId}/items/{itemId}', 'ItemsController@deletechecklistitems');
 	$router->post('checklists/{checklistId}/items/_bulk', 'ItemsController@updatechecklistitemsbulk');
-	
-	// $router->get('checklists/items/sumaries', 'ItemsController@sumaries');
-	// $router->get('checklists/items', 'ItemsController@getall');
 
-
+	$router->get('checklistss/items', 'ItemsController@getall');
 
 	/**
-		Histories
+	Histories
 	**/
-	// $router->get('checklists/histories', 'HistoriesController@index'); //
-	// $router->get('checklists/histories/{historyId}', 'HistoriesController@getone'); //
-
-
+	$router->get('checklistss/histories', 'HistoriesController@index'); //
+	$router->get('checklistss/histories/{historyId}', 'HistoriesController@getone'); //
 
 });
 
-   
+
+// $router->group(['prefix' => 'apis'], function () use ($router) 
+// {
+
+// 	$router->get('checklists/items/sumaries', 'ItemsController@sumaries');
+	
+
+
+// }
+
