@@ -1,13 +1,12 @@
-<?php 
+<?php
+
+namespace App\Http\Controllers;
+use App\History;
+use Illuminate\Http\Request;
+use DB;
+use URL;
 
 class ChecklistTestCest
 {
-    public function _before(ApiTester $I)
-    {
-    }
-
-    // tests
-    public function tryToTest(ApiTester $I)
-    {
-    }
+    private $token;
 }

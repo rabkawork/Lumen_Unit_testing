@@ -1,6 +1,10 @@
-<?php 
+<?php
 
-// ./vendor/bin/codecept run api UserAuthTestCest --steps
+namespace App\Http\Controllers;
+use App\History;
+use Illuminate\Http\Request;
+use DB;
+use URL;
 
 class TemplateTestCest
 {
