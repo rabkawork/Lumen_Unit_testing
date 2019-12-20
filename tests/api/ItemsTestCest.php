@@ -42,7 +42,7 @@ class ItemsTestCest
         $I->haveHttpHeader('Content-Type','application/json');
  		$I->wantToTest('Complete');
         $I->amBearerAuthenticated($this->token);
-        $I->sendPOST('api/checklists/complete', $sendJson);
+        $I->sendPOST    ('api/checklists/complete', $sendJson);
         $I->seeResponseCodeIs(200); // 200
         // $I->seeResponseIsJson();
     }
@@ -61,11 +61,113 @@ class ItemsTestCest
               }
             ]
           }';
-          $I->haveHttpHeader('Content-Type','application/json');
+        $I->haveHttpHeader('Content-Type','application/json');
  		$I->wantToTest('Incomplete');
         $I->amBearerAuthenticated($this->token);
         $I->sendPOST('api/checklists/incomplete', $sendJson);
         $I->seeResponseCodeIs(200); // 200
+        $I->seeResponseIsJson();
+    }
+
+    public function testListallItems(\ApiTester $I)
+	{
+        $I->haveHttpHeader('Content-Type','application/json');
+ 		$I->wantToTest('List All items in given checklists');
+        $I->amBearerAuthenticated($this->token);
+        $I->sendGET('api/checklists/1/items?filter&sort&fields&page_limit=10&page_offset=0', []);
+        $I->seeResponseCodeIs(200); // 200
+        $I->seeResponseIsJson();
+    }
+
+    public function testCreateChecklistItem(\ApiTester $I)
+	{
+
+        $sendJson = '{
+            "data": {
+              "attribute": {
+                "description": "Need to verify this guy house.",
+                "due": "2019-01-19 18:34:51",
+                "urgency": "2",
+                "assignee_id": 123
+              }
+            }
+          }';
+
+        $I->haveHttpHeader('Content-Type','application/json');
+ 		$I->wantToTest('Create Checklist Item');
+        $I->amBearerAuthenticated($this->token);
+        $I->sendPOST('api/checklists/1/items', $sendJson);
+        $I->seeResponseCodeIs(200); // 200
+        $I->seeResponseIsJson();
+    }
+
+
+    public function testCreateChecklistItemValidation(\ApiTester $I)
+	{
+
+        $sendJson = '{
+            "data": {
+              "attribute": {
+                "description": "Need to verify this guy house.",
+                "due": "2019-01-19 18:34:51",
+                "urgency": "2",
+                "assignee_id": 123
+              }
+            }
+          }';
+
+        $I->haveHttpHeader('Content-Type','application/json');
+ 		$I->wantToTest('Create Checklist Item');
+        $I->amBearerAuthenticated($this->token);
+        $I->sendPOST('api/checklists/1000/items', $sendJson);
+        $I->seeResponseCodeIs(404); // 200
+        $I->seeResponseIsJson();
+    }
+
+
+
+    public function testgetChecklistItemValidation(\ApiTester $I)
+	{
+
+        $I->haveHttpHeader('Content-Type','application/json');
+ 		$I->wantToTest('Get Checklist Item');
+        $I->amBearerAuthenticated($this->token);
+        $I->sendGET('api/checklists/1/items/200', []);
+        $I->seeResponseCodeIs(404); // 200
+        $I->seeResponseIsJson();
+    }
+
+    public function testgetChecklistItem(\ApiTester $I)
+	{
+
+        $I->haveHttpHeader('Content-Type','application/json');
+ 		$I->wantToTest('Get Checklist Item');
+        $I->amBearerAuthenticated($this->token);
+        $I->sendGET('api/checklists/1/items/1', []);
+        $I->seeResponseCodeIs(200); // 200
+        $I->seeResponseIsJson();
+    }
+
+
+    public function testUpdateChecklistItemValidation(\ApiTester $I)
+	{
+
+        $sendJson = '{
+            "data": {
+              "attribute": {
+                "description": "Need to verify this guy house.",
+                "due": "2019-01-19 18:34:51",
+                "urgency": "2",
+                "assignee_id": 123
+              }
+            }
+          }';
+
+        $I->haveHttpHeader('Content-Type','application/json');
+ 		$I->wantToTest('Create Checklist Item');
+        $I->amBearerAuthenticated($this->token);
+        $I->sendPATCH('api/checklists/1000/items', $sendJson);
+        $I->seeResponseCodeIs(404); // 200
         $I->seeResponseIsJson();
     }
 }
