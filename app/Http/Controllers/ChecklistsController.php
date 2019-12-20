@@ -85,7 +85,7 @@ class ChecklistsController extends Controller
     {
         $reqBody = $request->all();
         $reqAttributes = $reqBody['data']['attributes'];
-        try{
+        // try{
             $validator = \Validator::make($reqBody, [
                 'data'             => 'required',
                 'data.attributes'  => 'required',
@@ -118,7 +118,8 @@ class ChecklistsController extends Controller
                 $checklist->template_id   = 0;
 
                 $checklist->is_complete   = isset($reqAttributes['is_complete']) ? (bool) $reqAttributes['is_complete'] : false;
-                $checklist->completed_at  = isset($reqAttributes['completed_at']) ? $reqAttributes['completed_at'] : '';
+                if(isset($reqAttributes['completed_at']))
+                    $checklist->completed_at  = $reqAttributes['completed_at'];
                 // $checklist->links         = json_encode($links);
                 $checklist->save();
                 $id = $checklist->id;
@@ -157,13 +158,13 @@ class ChecklistsController extends Controller
                              ];
                 return response()->json($response,201);
             }
-        }catch (\Exception $e) {
-            //return error message
-            return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
-                ], 500);
-        }
+        // }catch (\Exception $e) {
+        //     //return error message
+        //     return response()->json([
+        //             'error'    => 'Server Error', 
+        //             'status'  => 500, 
+        //         ], 500);
+        // }
     }
 
     public function getone(Request $request,$id)
@@ -292,7 +293,7 @@ class ChecklistsController extends Controller
                                 'links' => $reqData['links']['self']
                                 ]
                              ];
-                return $reqBody;
+                return response()->json($response, 200);
             }
 
         }catch (\Exception $e) {
@@ -317,10 +318,10 @@ class ChecklistsController extends Controller
                 //return required validation
                 return response()->json(
                         [
-                            'error'    => $validator->errors(), 
-                            'status'     => 400
+                            'error'    => 'Not Found', 
+                            'status'     => 404
                         ],
-                       400);
+                       404);
             }
             else
             {
