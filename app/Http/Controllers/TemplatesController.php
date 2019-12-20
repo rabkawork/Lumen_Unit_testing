@@ -304,7 +304,7 @@ class TemplatesController extends Controller
     //
     public function remove($id)
     {
-        // try {
+        try {
             $reqBody['templateId'] = $id;
             $validator = \Validator::make($reqBody, [
                  'templateId'     => 'required|exists:templates,id',
@@ -338,18 +338,72 @@ class TemplatesController extends Controller
                 return response()->json('',204);
             }
 
-        // } catch (\Exception $e) {
-        //     //return error message
-        //     return response()->json([
-        //             'error'    => 'Server Error', 
-        //             'status'  => 500, 
-        //         ], 500);
-        // }
+        } catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
+        }
     }
 
-    public function assigns(Request $request,$id)
+    public function assign(Request $request,$id)
     {
-        
+
+        $reqBody      = $request->all();
+        $req          = $reqBody['data'];
+        try {
+            $reqBody['templateId'] = $id;
+            $validator = \Validator::make($reqBody, [
+                 'templateId'     => 'exists:templates,id',
+            ]);
+
+            if ($validator->fails()) 
+            {
+                //return required validation
+                return response()->json([
+                        'error'    => 'Not Found', 
+                        'status'   => 400
+                        ],
+                       400);
+            }
+            else
+            {
+
+                $data = [];
+                foreach ($req as $key => $value) {
+                    # code...
+
+                    $objectId = $value['attributes']['object_id'];
+
+                    $data[] = $objectId;
+
+                    DB::table('checklists')->where('object_id', $objectId)
+                        ->update(['object_domain' => 'deals','template_id' => $id]);   
+                }
+
+                $objectIds = implode(',',$data);
+                
+                $History = new History();
+                $saveLog = [
+                    'loggable_type' => 'templates',
+                    'action'        => 'assign object_id '.$objectIds,
+                    'value'         => $id,
+                    'created_at'    => date('Y-m-d H:i:s'),
+                    'updated_at'    => date('Y-m-d H:i:s'),
+                ];
+                $History->saveLog($saveLog);
+
+                return response()->json('',201);
+            }
+
+        } catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
+        }
     }
 
 

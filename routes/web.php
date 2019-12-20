@@ -29,7 +29,7 @@ $router->group(['prefix' => 'api'], function () use ($router)
 	$router->get('checklists/templates/{templateId}', 'TemplatesController@getone');
 	$router->patch('checklists/templates/{templateId}', 'TemplatesController@update');
 	$router->delete('checklists/templates/{templateId}', 'TemplatesController@remove');
-	$router->post('checklists/templates/{templateId}/assigns', 'TemplatesController@assigns');
+	$router->post('checklists/templates/{templateId}/assigns', 'TemplatesController@assign');
 
 	/**
 		Checklists 
@@ -44,8 +44,8 @@ $router->group(['prefix' => 'api'], function () use ($router)
 	/**
 		Histories
 	**/
-	$router->get('checklists/histories', 'HistoriesController@index');
-	$router->get('checklists/histories/{historyId}', 'HistoriesController@getone');
+	// $router->get('checklists/histories', 'HistoriesController@index');
+	// $router->get('checklists/histories/{historyId}', 'HistoriesController@getone');
 
 });
 
