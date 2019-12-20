@@ -156,7 +156,8 @@ class ItemsController extends Controller
 
     public function createchecklistitem(Request $request,$checklistId)
     {
-
+        return $request->all();
+        
     }
 
     public function getchecklistitem(Request $request,$checklistId,$itemId)
