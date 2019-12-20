@@ -55,23 +55,13 @@ $router->group(['prefix' => 'api'], function () use ($router)
 	$router->delete('checklists/{checklistId}/items/{itemId}', 'ItemsController@deletechecklistitems');
 	$router->post('checklists/{checklistId}/items/_bulk', 'ItemsController@updatechecklistitemsbulk');
 
-	$router->get('checklistss/items', 'ItemsController@getall');
+	$router->get('_checklists/items', 'ItemsController@getall');
 
 	/**
 	Histories
 	**/
-	$router->get('checklistss/histories', 'HistoriesController@index'); //
-	$router->get('checklistss/histories/{historyId}', 'HistoriesController@getone'); //
+	$router->get('_checklists/histories', 'HistoriesController@index'); //
+	$router->get('_checklists/histories/{historyId}', 'HistoriesController@getone'); //
 
 });
-
-
-// $router->group(['prefix' => 'apis'], function () use ($router) 
-// {
-
-// 	$router->get('checklists/items/sumaries', 'ItemsController@sumaries');
-	
-
-
-// }
 

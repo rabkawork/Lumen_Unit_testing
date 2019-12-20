@@ -22,14 +22,61 @@ class HistoriesController extends Controller
 
     public function index(Request $request)
     {
-        return $request->all();
+        // try {
+
+            $historiesCount = DB::table('histories')
+                         ->select(DB::raw('count(*) as total'))->first();
+
+            $total = (int) $historiesCount->total;
+            $limit  = $request->page_limit  ? (int) $request->page_limit  : 0;
+            $offset = $request->page_offset ? (int) $request->page_offset : 0;
+            $count = (int) $total < $limit ? 0 : ceil((int) $total / (int) $limit);
+
+            $histories = DB::table('histories')
+                    ->offset((int) $offset)
+                    ->limit((int) $limit)
+                    ->get();
+
+            $showPaging  = $this->showPaging((int) $total,$limit,$offset,$this->url,$count);
+
+            $params            = $request->all();
+            $response          = [];
+            $response['meta']  = ['total' => (int) $total,'count' => $count];
+            $response['links'] = $showPaging;
+        
+            $data = [];
+            foreach ($histories as $key => $value) {
+
+                // $type = $value->type;
+                $id = $value->id;
+
+                unset($value->id);
+                $data[]  = [
+                                'id' => (int) $id,
+                                'type' => 'history',
+                                'attributes' => $value,
+                                'links' => ['self' => URL::to('/').'_checklists/histories/'.$id]
+                        ];
+            
+            }
+            $response['data']  = $data;
+
+            return response()->json($response,200);
+
+        // } catch (\Exception $e) {
+        //     //return error message
+        //     return response()->json([
+        //             'error'    => 'Server Error', 
+        //             'status'  => 500, 
+        //         ], 500);
+        // }
     }
 
     public function getone(Request $request,$historyId)
     {
         // return $request->all();
         try {
-            $reqBody['historyId'] = $id;
+            $reqBody['historyId'] = $historyId;
             $validator = \Validator::make($reqBody, [
                 'historyId'     => 'exists:histories,id',
             ]);
@@ -47,17 +94,17 @@ class HistoriesController extends Controller
             {
 
                 $histories = DB::table('histories')
-                        ->where('id',$id)
+                        ->where('id',$historyId)
                         ->first();
 
                 $type = 'history';
                 $data = [];
-                unset($checklists->id);
+                unset($histories->id);
                 $response  = ['data' => [
-                                'id' => (int) $id,
+                                'id' => (int) $historyId,
                                 'type' => $type,
                                 'attributes' => $histories,
-                                'links' => URL::to('/').'/checklists/'.$id
+                                'links' => URL::to('/').'/_checklists/histories/'.$historyId
                                 ]
                              ];
                 return response()->json($response,200);
