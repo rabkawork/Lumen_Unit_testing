@@ -27,6 +27,8 @@ class TemplateTestCest
         $I->seeResponseIsJson();
     }
 
+  
+
     public function testCreateTemplates(\ApiTester $I)
 	{
         $sendJson = '{
@@ -57,17 +59,14 @@ class TemplateTestCest
           }';
 
         $I->haveHttpHeader('Content-Type','application/json');
-        $I->wantToTest('CREATE Templates');
+        $I->wantToTest('CREATE Checklist Template');
         $I->amBearerAuthenticated($this->token);
-        $I->sendPOST('api/checklists', $sendJson);
+        $I->sendPOST('api/checklists/templates', $sendJson);
         $response = json_decode($I->grabResponse());
-        // var_dump($response);
         $this->id = $response->data->id;     
-
-
         $I->seeResponseCodeIs(201); // 200
         $I->seeResponseIsJson();
-  }
+    }
 
     public function testCreateTemplatesValidation(\ApiTester $I)
 	{
@@ -103,7 +102,47 @@ class TemplateTestCest
         $I->wantToTest('CREATE Checklists/templates Validation');
         $I->amBearerAuthenticated($this->token);
         $I->sendPOST('api/checklists/templates', $sendJson);
-        $I->seeResponseCodeIs(404); // 200
+        $I->seeResponseCodeIs(400); // 200
         $I->seeResponseIsJson();
-    }
+     } 
+
+
+     public function testGetOneTemplates(\ApiTester $I)
+     {
+         $I->wantToTest('Get Checklist Template');
+         $I->amBearerAuthenticated($this->token);
+         $I->sendGET('api/checklists/templates/'.$this->id, []);
+         $I->seeResponseCodeIs(200); // 200
+         $I->seeResponseIsJson();
+     }
+
+     public function testGetOneTemplatesValidation(\ApiTester $I)
+     {
+         $I->wantToTest('Get Checklist Template');
+         $I->amBearerAuthenticated($this->token);
+         $I->sendGET('api/checklists/templates/1000101', []);
+         $I->seeResponseCodeIs(404); // 200
+         $I->seeResponseIsJson();
+         $I->seeResponseContainsJson(['error' => 'Not Found']);
+     }
+
+     public function testDeleteTemplates(\ApiTester $I)
+     {
+         $I->wantToTest('Delete Template');
+         $I->amBearerAuthenticated($this->token);
+         $I->sendGET('api/checklists/templates/'.$this->id, []);
+         $I->seeResponseCodeIs(200); // 200
+         $I->seeResponseIsJson();
+         $I->seeResponseContainsJson(['error' => 'Not Found']);
+     }
+
+     public function testDeleteTemplatesValidation(\ApiTester $I)
+     {
+         $I->wantToTest('Delete Template');
+         $I->amBearerAuthenticated($this->token);
+         $I->sendGET('api/checklists/templates/100101', []);
+         $I->seeResponseCodeIs(404); // 200
+         $I->seeResponseIsJson();
+         $I->seeResponseContainsJson(['error' => 'Not Found']);
+     }
 }

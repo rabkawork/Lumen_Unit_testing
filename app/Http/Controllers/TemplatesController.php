@@ -81,7 +81,6 @@ class TemplatesController extends Controller
     {
         $reqBody = $request->all();
         $reqAttributes = $reqBody['data']['attributes'];
-
         try {
             $validator = \Validator::make($reqAttributes, [
                 'name'     => 'required|string',
@@ -325,10 +324,10 @@ class TemplatesController extends Controller
             {
                 //return required validation
                 return response()->json([
-                        'error'    => $validator->errors(), 
-                        'status'     => 400
+                        'error'      => 'Not Found', 
+                        'status'     => 404
                         ],
-                       400);
+                       404);
             }
             else
             {
