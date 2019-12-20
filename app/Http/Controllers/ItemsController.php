@@ -237,15 +237,9 @@ class ItemsController extends Controller
     public function getchecklistitem(Request $request,$checklistId,$itemId)
     {
 
-        // try {
+        try {
             $reqBody['checklistId'] = $checklistId;
             $reqBody['itemId'] = $itemId;
-            // $validator = \Validator::make($reqBody, [
-            //     'itemId'          => ['required',Rule::exists('items')->where(function ($query) {
-            //                             $query->where('checklistId', $checklistId);
-            //                             $query->where('itemId', $itemId);
-            //                         })],
-            // ]);
                                     
             $validator = \Validator::make($reqBody, [
                 'checklistId'     => 'exists:checklists,id',
@@ -295,13 +289,13 @@ class ItemsController extends Controller
                     return response()->json($response,200);
                 }
             }
-        // } catch (\Exception $e) {
-        //     //return error message
-        //     return response()->json([
-        //             'error'    => 'Server Error', 
-        //             'status'  => 500, 
-        //         ], 500);
-        // }
+        } catch (\Exception $e) {
+            //return error message
+            return response()->json([
+                    'error'    => 'Server Error', 
+                    'status'  => 500, 
+                ], 500);
+        }
     }
 
     public function updatechecklistitem(Request $request,$checklistId,$itemId)
