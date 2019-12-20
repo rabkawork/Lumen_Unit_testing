@@ -300,28 +300,33 @@ class ItemsController extends Controller
 
     public function updatechecklistitem(Request $request,$checklistId,$itemId)
     {
-
+        $reqBody = $request->all(); 
+        $reqAttributes = $reqBody['data']['attribute'];
     }
 
     public function deletechecklistitems(Request $request,$checklistId,$itemId)
     {
+        $reqBody = $request->all(); 
 
     }
 
     public function updatechecklistitemsbulk(Request $request,$checklistId,$itemId)
     {
+        $reqBody = $request->all(); 
 
     }
 
 
     public function sumaries(Request $request)
     {
+        $reqBody = $request->all(); 
 
     }
 
 
     public function getall(Request $request)
     {
+        $reqBody = $request->all(); 
 
     }
 
