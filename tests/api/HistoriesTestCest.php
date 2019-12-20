@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 use \ApiTester;
 use Illuminate\Support\Facades\Session;
@@ -13,7 +13,7 @@ class HistoriesTestCest
 	{
         /**
          *  initial login
-         *  i writing this code, to get token 
+         *  i writing this code, to get token
          */
         $I->wantToTest('Login');
 		$I->sendPOST('api/login', ['email' => 'ah4d1an@gmail.com','password' => '123456789']);
@@ -26,7 +26,7 @@ class HistoriesTestCest
         $I->seeResponseCodeIs(200); // 200
         $I->seeResponseIsJson();
     }
-    
+
 
 
     public function testGetHistoryByIdWrongId(\ApiTester $I)
@@ -50,5 +50,5 @@ class HistoriesTestCest
         $I->seeResponseIsJson();
     }
 
-    
+
 }

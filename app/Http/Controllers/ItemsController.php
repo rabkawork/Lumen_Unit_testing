@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class ItemsController extends Controller
 {
     public $url = 'api/checklists';
-    
+
     /**
      * Create a new controller instance.
      *
@@ -29,7 +29,7 @@ class ItemsController extends Controller
     {
         $reqBody = $request->all();
         $reqData = $reqBody['data'];
-        
+
         try{
             $getIds = [];
             foreach ($reqData as $key => $value) {
@@ -46,8 +46,8 @@ class ItemsController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
     }
@@ -56,7 +56,7 @@ class ItemsController extends Controller
     {
         $reqBody = $request->all();
         $reqData = $reqBody['data'];
-        
+
         try{
             $getIds = [];
             foreach ($reqData as $key => $value) {
@@ -76,8 +76,8 @@ class ItemsController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
     }
@@ -90,11 +90,11 @@ class ItemsController extends Controller
                 'checklistId'     => 'exists:checklists,id',
             ]);
 
-            if ($validator->fails()) 
+            if ($validator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                        404);
@@ -123,7 +123,7 @@ class ItemsController extends Controller
                 $response          = [];
                 $response['meta']  = ['total' => (int) $total,'count' => $count];
                 $response['links'] = $showPaging;
-            
+
 
 
                 $checklists = DB::table('checklists')
@@ -146,7 +146,7 @@ class ItemsController extends Controller
                                 ];
 
                 $response['links'] = ['self' => URL::to('/').'/checklists/'.$checklistId];
-                
+
                 return response()->json($response,200);
             }
 
@@ -154,8 +154,8 @@ class ItemsController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
     }
@@ -163,7 +163,7 @@ class ItemsController extends Controller
 
     public function createchecklistitem(Request $request,$checklistId)
     {
-        $reqBody = $request->all(); 
+        $reqBody = $request->all();
         $reqAttributes = $reqBody['data']['attribute'];
 
         try {
@@ -172,11 +172,11 @@ class ItemsController extends Controller
                 'checklistId'     => 'exists:checklists,id',
             ]);
 
-            if ($validator->fails()) 
+            if ($validator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                        404);
@@ -227,11 +227,11 @@ class ItemsController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
-        
+
     }
 
     public function getchecklistitem(Request $request,$checklistId,$itemId)
@@ -240,17 +240,17 @@ class ItemsController extends Controller
         try {
             $reqBody['checklistId'] = $checklistId;
             $reqBody['itemId'] = $itemId;
-                                    
+
             $validator = \Validator::make($reqBody, [
                 'checklistId'     => 'exists:checklists,id',
                 'itemId'          => 'exists:items,id',
             ]);
 
-            if ($validator->fails()) 
+            if ($validator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                         404);
@@ -267,7 +267,7 @@ class ItemsController extends Controller
                 if(empty($items))
                 {
                     return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                         404);
@@ -292,30 +292,30 @@ class ItemsController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
     }
 
     public function updatechecklistitem(Request $request,$checklistId,$itemId)
     {
-        $reqBody = $request->all(); 
+        $reqBody = $request->all();
         $reqAttributes = $reqBody['data']['attribute'];
         try {
             $reqBody['checklistId'] = $checklistId;
             $reqBody['itemId'] = $itemId;
-                                    
+
             $validator = \Validator::make($reqBody, [
                 'checklistId'     => 'exists:checklists,id',
                 'itemId'          => 'exists:items,id',
             ]);
 
-            if ($validator->fails()) 
+            if ($validator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                         404);
@@ -332,7 +332,7 @@ class ItemsController extends Controller
                 if(empty($Items))
                 {
                     return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                         404);
@@ -346,19 +346,19 @@ class ItemsController extends Controller
                     $Item->task_id       = isset($reqAttributes['task_id']) ? $reqAttributes['task_id'] : 0;
                     $Item->updated_by    = $user->id;
                     $Item->template_id   = 0;
-    
+
                     $Item->is_complete   = isset($reqAttributes['is_complete']) ? (bool) $reqAttributes['is_complete'] : false;
                     if(isset($reqAttributes['completed_at']))
                         $Item->completed_at  = $reqAttributes['completed_at'];
                     // $Item->links         = json_encode($reqBody['links']);
                     $Item->save();
                     $itemId = $Item->id;
-    
-    
+
+
                     $checklists = DB::table('checklists')
                     ->where('id',$checklistId)
                     ->first();
-    
+
                     $type = $checklists->type;
                     $data = [];
                     unset($checklists->id);
@@ -378,29 +378,29 @@ class ItemsController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
     }
 
     public function deletechecklistitems(Request $request,$checklistId,$itemId)
     {
-        // $reqBody = $request->all(); 
+        // $reqBody = $request->all();
         try {
             $reqBody['checklistId'] = $checklistId;
             $reqBody['itemId'] = $itemId;
-                                    
+
             $validator = \Validator::make($reqBody, [
                 'checklistId'     => 'exists:checklists,id',
                 'itemId'          => 'exists:items,id',
             ]);
 
-            if ($validator->fails()) 
+            if ($validator->fails())
             {
                 //return required validation
                 return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                         404);
@@ -417,14 +417,14 @@ class ItemsController extends Controller
                 if(empty($Items))
                 {
                     return response()->json([
-                        'error'      => 'Not Found', 
+                        'error'      => 'Not Found',
                         'status'     => 404
                         ],
                         404);
                 }
                 else{
                     $Item = Item::find($itemId)->delete();
-    
+
                     $checklists = DB::table('checklists')
                     ->where('id',$checklistId)
                     ->first();
@@ -433,7 +433,7 @@ class ItemsController extends Controller
                     $items = DB::table('items')
                     ->where('id',$itemId)
                     ->first();
-    
+
                     $type = $checklists->type;
                     $data = [];
                     unset($items->id);
@@ -453,31 +453,68 @@ class ItemsController extends Controller
         } catch (\Exception $e) {
             //return error message
             return response()->json([
-                    'error'    => 'Server Error', 
-                    'status'  => 500, 
+                    'error'    => 'Server Error',
+                    'status'  => 500,
                 ], 500);
         }
 
     }
 
-    public function updatechecklistitemsbulk(Request $request,$checklistId,$itemId)
+    public function updateBulk(Request $request,$checklistId)
     {
-        $reqBody = $request->all(); 
+        $reqBody = $request->all();
+        $result  = [];
 
+        if(isset($reqBody['data']))
+        {
+            foreach($reqBody['data'] as $value)
+            {
+                $id = $value['id'];
+                $attributes = $value['attributes'];
+                $update = Item::where('id',$id)->first();
+                if(!empty($update))
+                {
+                    $result[] = [
+                        'id' => $id,
+                        'action' => 'update',
+                        'status' => '200',
+                    ];
+
+                    $update->description = $value['attributes']['description'];
+                    $update->due = $value['attributes']['due'];
+                    $update->urgency = $value['attributes']['urgency'];
+                    $update->save();
+                }
+                else
+                {
+                    $result[] = [
+                        'id' => $id,
+                        'action' => 'update',
+                        'status' => '404',
+                    ];
+                }
+            }
+            return response()->json($result, 200);
+        }
+        else{
+            return response()->json([
+                'error'    => 'Bad Request',
+                'status'  => 400,
+            ], 400);
+        }
     }
 
 
     public function sumaries(Request $request)
     {
-        $reqBody = $request->all(); 
+        $reqBody = $request->all();
 
     }
 
 
     public function getall(Request $request)
     {
-        $reqBody = $request->all(); 
-
+        $reqBody = $request->all();
     }
 
 }
