@@ -15,7 +15,7 @@ class History extends Model {
 
 	protected function saveLog($data)
 	{
-		
+		return History::insert($data);
 	} 
 
 }
